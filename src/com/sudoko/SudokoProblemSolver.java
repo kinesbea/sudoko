@@ -29,7 +29,6 @@ public class SudokoProblemSolver {
 		            for (File f : files) {
 		            	
 		            	String outputFileName = f.getParent()+ File.separator+ f.getName().replaceAll(".txt", ".sln.txt");
-		            	System.out.println(outputFileName);
 		            	
 		            	String[] matrix = new String[9];
 						FileReader fr = new FileReader(f);
@@ -43,12 +42,15 @@ public class SudokoProblemSolver {
 						Solver solver = new Solver();
 						String[] result = solver.process(matrix);
 	
-						BufferedWriter out = new BufferedWriter(new FileWriter(outputFileName, true));
-		            	for(int idx = 0 ; idx<9 ; idx++) {
-		            		out.write(result[idx]);
-		            		out.newLine();
-		            	}
-		            	out.close();
+						if (null!=result) {
+							System.out.println(outputFileName);
+							BufferedWriter out = new BufferedWriter(new FileWriter(outputFileName, true));
+			            	for(int idx = 0 ; idx<9 ; idx++) {
+			            		out.write(result[idx]);
+			            		out.newLine();
+			            	}
+			            	out.close();
+						}
 		            }
 		        } else {
 		        	System.out.println("No files found");

@@ -43,13 +43,15 @@ public class Solver {
 				String[] info = guessInfo.split("\\,");
 				int iGuess = Integer.valueOf(info[0]);
 				int xGuess = Integer.valueOf(info[1]);
-				String guessValue = info[2].substring(0, 1);
+				String guessValue = "";
+				if (info.length>2) {
+					if (info[2].length()>0) guessValue = info[2].substring(0, 1);
+					info[2] = info[2].replaceAll(guessValue, "");
+					guessInfo = iGuess+","+xGuess+","+info[2];
+				}
 				if (geuessing && guessValue.trim().length()==0) break;
 				if (!geuessing) {
 					geuessing = true;
-					info[2] = info[2].replaceAll(guessValue, "");
-					guessInfo = iGuess+","+xGuess+","+guessValue;
-					
 					setCellValueAndAdjust(iGuess, xGuess, guessValue);					
 					if (info[2].trim().length()!=0) --xCount;
 				}
@@ -57,7 +59,12 @@ public class Solver {
 
 		}
 		//debug();
-		return convertRowsToArray(rows);
+		if (xCount!=0) {
+			System.out.println("Cannot solve this puzzle.");
+			return null;
+		} else {
+			return convertRowsToArray(rows);
+		}
 	}
 
 	private void setCellValueAndAdjust(int iGuess, int xGuess, String guessValue) {
