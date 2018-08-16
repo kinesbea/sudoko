@@ -1,32 +1,37 @@
 package com.sudoko;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
 
 public class SudokoProblemSolver {
 
 	public static void main (String[] args) {
-		System.out.println("start");
 		
-
-	    File file = new File("./data");
-	    System.out.println(file.getAbsolutePath());
-	    
-	    if (file.isDirectory()) {
-	        File[] files = file.listFiles(new FilenameFilter() {
-	            public boolean accept(File dir, String fileName) {
-	              return (fileName.endsWith(".TXT") || fileName.endsWith(".txt")); 
-	            }
-	        });    	        
-	        
-	        if (files != null && files.length > 0) {
-	            for (File f : files) {
-	            	System.out.println(f.getAbsolutePath());
-	            	String[] matrix = new String[9];
-	            	try {
+		if (args.length==0) {
+			System.out.println("Please enter the full path");
+		}
+		String fullPath = args[0];
+	    File file = new File(fullPath);
+	    try {
+		    if (file.isDirectory()) {
+		        File[] files = file.listFiles(new FilenameFilter() {
+		            public boolean accept(File dir, String fileName) {
+		              return ((fileName.endsWith(".TXT") || fileName.endsWith(".txt")) && !fileName.contains("sln") ); 
+		            }
+		        });    	        
+		        
+		        if (files != null && files.length > 0) {
+		            for (File f : files) {
+		            	String outputFileName = f.getParent()+ File.separator+ f.getName().replaceAll(".txt", ".sln.txt");
+		            	System.out.println(outputFileName);
+		            	
+		            	String[] matrix = new String[9];
+		            	
 						FileReader fr = new FileReader(f);
 						String numberLine = "";
 						int i;
@@ -34,29 +39,26 @@ public class SudokoProblemSolver {
 							numberLine += (char) i;				
 						}						
 						matrix = numberLine.split("\\r\\n");
-						System.out.println(numberLine);
-					} catch (FileNotFoundException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-	            	
-					Solver solver = new Solver();
-					String[] result = solver.process(matrix);
-					System.out.println("---------");
-	            	for(int i = 0 ; i<9 ; i++) {
-	            		System.out.println(result[i]);
-	            	}
-	            	
-	            	System.out.println();
-	            	System.out.println();
-	            	System.out.println();
-	            	//break;
-	            }
-	        }
-	    }
+		            	
+						Solver solver = new Solver();
+						String[] result = solver.process(matrix);
+	
+						BufferedWriter out = new BufferedWriter(new FileWriter(outputFileName, true));
+		            	for(int idx = 0 ; idx<9 ; idx++) {
+		            		out.write(result[idx]);
+		            		out.newLine();
+		            	}
+		            	out.close();
+		            }
+		        } else {
+		        	System.out.println("No files found");
+		        }
+		    }
+		} catch (FileNotFoundException e) {
+			System.out.println("File not found");
+		} catch (IOException e) {
+			System.out.println("Failed reading the files");
+		}	    
 	}
 	
 }
