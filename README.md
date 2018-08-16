@@ -6,4 +6,4 @@ To run:
 example:
 	java -jar sudoko.jar /Users/venusbea/Downloads/SudokuChallenge/
 
-(Note: Solutions in data filder)
+(Note: Solutions in data folder)
