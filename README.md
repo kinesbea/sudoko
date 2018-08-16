@@ -5,3 +5,4 @@ To run:
 	
 example:
 	java -jar sudoko.jar /Users/venusbea/Downloads/SudokuChallenge/
+	java -jar sudoko.jar /Users/venusbea/eclipse-workspace/sudoko/data

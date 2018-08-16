@@ -27,11 +27,11 @@ public class SudokoProblemSolver {
 		        
 		        if (files != null && files.length > 0) {
 		            for (File f : files) {
+		            	
 		            	String outputFileName = f.getParent()+ File.separator+ f.getName().replaceAll(".txt", ".sln.txt");
 		            	System.out.println(outputFileName);
 		            	
 		            	String[] matrix = new String[9];
-		            	
 						FileReader fr = new FileReader(f);
 						String numberLine = "";
 						int i;
