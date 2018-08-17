@@ -6,12 +6,25 @@ public class Solver {
 	private Column[] columns = new Column[CELL_COUNT];
 	private Group[] groups = new Group[CELL_COUNT];
 	int xCount = 0;
+	private String hitMissInfo = null;
 	
+	public String getHitMissInfo() {
+		return hitMissInfo;
+	}
+
+	public void setHitMissInfo(String hitMissInfo) {
+		this.hitMissInfo = hitMissInfo;
+	}
+
 	public String[] process(String[] matrix) {
 		initializeMatrix(matrix);	
 		loadPossibleValues();
+		if (null!=hitMissInfo) {
+			String[] info = hitMissInfo.split("\\,");
+			setCellValueAndAdjust(Integer.valueOf(info[0]), Integer.valueOf(info[1]), info[2]);	
+			hitMissInfo = null;
+		}		
 		String guessInfo ="";
-		boolean geuessing = false;
 		while (xCount>0) {
 			boolean hachanged = false;
 			for (int i=0; i<CELL_COUNT; i++) {			
@@ -28,7 +41,6 @@ public class Solver {
 					}
 					if ( !"".equals(found)) {
 						setCellValueAndAdjust(i, x, found);	
-						--xCount;
 						found = "";	
 						hachanged = true;
 					} else {
@@ -40,31 +52,17 @@ public class Solver {
 				}
 			}	
 			if (!hachanged)	{
-				String[] info = guessInfo.split("\\,");
-				int iGuess = Integer.valueOf(info[0]);
-				int xGuess = Integer.valueOf(info[1]);
-				String guessValue = "";
-				if (info.length>2) {
-					if (info[2].length()>0) guessValue = info[2].substring(0, 1);
-					info[2] = info[2].replaceAll(guessValue, "");
-					guessInfo = iGuess+","+xGuess+","+info[2];
-				}
-				if (geuessing && guessValue.trim().length()==0) break;
-				if (!geuessing) {
-					geuessing = true;
-					setCellValueAndAdjust(iGuess, xGuess, guessValue);					
-					if (info[2].trim().length()!=0) --xCount;
-				}
+				break;
 			}
 
 		}
-		//debug();
+//		debug();
 		if (xCount!=0) {
-			System.out.println("Cannot solve this puzzle.");
-			return null;
+			hitMissInfo = guessInfo;
 		} else {
-			return convertRowsToArray(rows);
+			hitMissInfo = null;
 		}
+		return convertRowsToArray(rows);
 	}
 
 	private void setCellValueAndAdjust(int iGuess, int xGuess, String guessValue) {
@@ -129,10 +127,12 @@ public class Solver {
 	}
 
 	private void loadPossibleValues() {
+		xCount = 0;
 		for (int i=0; i<CELL_COUNT; i++) {			
 			for (int x=0; x<CELL_COUNT; x++) {
 				Cell currentCell = rows[i].getCell(x);
 				if (!"X".equals(currentCell.getCellNumber())) continue;
+				else ++xCount;
 				
 				int groupNo = Group.getGroupNumner(i, x);
 				String allNumbers = rows[i].getTakenNumbers() + columns[x].getTakenNumbers() + groups[groupNo].getTakenNumbers();
@@ -149,7 +149,6 @@ public class Solver {
 	private void initializeMatrix(String[] matrix) {
 		for (int x=0; x<CELL_COUNT; x++) {
 			rows[x] = new Row(matrix[x]);
-			xCount += rows[x].getxCount();
 		}	
 		for (int x=0; x<CELL_COUNT; x++) {
 			columns[x] = new Column(rows,x);

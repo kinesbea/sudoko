@@ -11,7 +11,6 @@ import java.io.IOException;
 public class SudokoProblemSolver {
 
 	public static void main (String[] args) {
-		
 		if (args.length==0) {
 			System.out.println("Please enter the full path");
 		}
@@ -21,7 +20,7 @@ public class SudokoProblemSolver {
 		    if (file.isDirectory()) {
 		        File[] files = file.listFiles(new FilenameFilter() {
 		            public boolean accept(File dir, String fileName) {
-		              return ((fileName.endsWith(".TXT") || fileName.endsWith(".txt")) && !fileName.contains("sln") ); 
+		              return ((fileName.endsWith(".txt")) && !fileName.contains("sln") ); 
 		            }
 		        });    	        
 		        
@@ -41,7 +40,25 @@ public class SudokoProblemSolver {
 		            	
 						Solver solver = new Solver();
 						String[] result = solver.process(matrix);
-	
+						String hitMissInfo = solver.getHitMissInfo();
+						if (null!= hitMissInfo){
+							String[] info = hitMissInfo.split("\\,");
+							int iGuess = Integer.valueOf(info[0]);
+							int xGuess = Integer.valueOf(info[1]);
+							String guessValue = info[2];
+							for (int idx = 0; idx <guessValue.length(); idx++) {
+								String value = guessValue.substring(idx, idx+1);
+								String guessResult = new String(iGuess+","+xGuess+","+value);
+								solver.setHitMissInfo(guessResult);
+								result = solver.process(matrix);
+								if (null==solver.getHitMissInfo()) break;
+							}
+							if (null!=solver.getHitMissInfo()) {
+								result = null;
+								System.out.println("Cannot solve "+f.getName());
+							}
+						}
+						
 						if (null!=result) {
 							System.out.println(outputFileName);
 							BufferedWriter out = new BufferedWriter(new FileWriter(outputFileName, true));

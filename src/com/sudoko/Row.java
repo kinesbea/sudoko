@@ -5,7 +5,6 @@ public class Row {
 	private int cellsFilled = 0;
 	private Cell matrixRow[] = new Cell[CELL_COUNT];	
 	private String takenNumbers = "";
-	private int xCount = 0;
 	
 	public Row(String numbers) {
 		super();
@@ -15,7 +14,7 @@ public class Row {
 			if (!"X".equals(c)) {
 				matrixRow[i].setCellNumber(c);
 				takenNumbers = takenNumbers+c;
-			} else setxCount(getxCount() + 1);
+			} 
 		}
 	}	
 	
@@ -44,14 +43,4 @@ public class Row {
 		this.takenNumbers = takenNumbers;
 	}
 
-	public int getxCount() {
-		return xCount;
-	}
-
-	public void setxCount(int xCount) {
-		this.xCount = xCount;
-	}
-	
-	
-	
 }
