@@ -61,6 +61,8 @@ public class SudokoProblemSolver {
 						
 						if (null!=result) {
 							System.out.println(outputFileName);
+							File outputFile = new File(outputFileName);
+							if (outputFile.exists()) outputFile.delete();
 							BufferedWriter out = new BufferedWriter(new FileWriter(outputFileName, true));
 			            	for(int idx = 0 ; idx<9 ; idx++) {
 			            		out.write(result[idx]);
